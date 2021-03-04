@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19H524" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Films" representedClassName="Films" syncable="YES">
+        <attribute name="characters" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="created" optional="YES" attributeType="String"/>
+        <attribute name="director" optional="YES" attributeType="String"/>
+        <attribute name="edited" optional="YES" attributeType="String"/>
+        <attribute name="episodeId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="openingCrawl" optional="YES" attributeType="String"/>
+        <attribute name="planets" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="producer" optional="YES" attributeType="String"/>
+        <attribute name="releaseDate" optional="YES" attributeType="String"/>
+        <attribute name="species" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="starships" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+        <attribute name="vehicles" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+    </entity>
+    <entity name="Person" representedClassName="Person" syncable="YES">
+        <attribute name="birthYear" optional="YES" attributeType="String"/>
+        <attribute name="created" optional="YES" attributeType="String"/>
+        <attribute name="edited" optional="YES" attributeType="String"/>
+        <attribute name="eyeColor" optional="YES" attributeType="String"/>
+        <attribute name="films" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="gender" optional="YES" attributeType="String"/>
+        <attribute name="hairColor" optional="YES" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="String"/>
+        <attribute name="homeworld" optional="YES" attributeType="String"/>
+        <attribute name="mass" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="skinColor" optional="YES" attributeType="String"/>
+        <attribute name="species" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="starships" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+        <attribute name="vehicles" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+    </entity>
+    <entity name="Planets" representedClassName="Planets" syncable="YES">
+        <attribute name="climate" optional="YES" attributeType="String"/>
+        <attribute name="created" optional="YES" attributeType="String"/>
+        <attribute name="diameter" optional="YES" attributeType="String"/>
+        <attribute name="edited" optional="YES" attributeType="String"/>
+        <attribute name="films" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="gravity" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="orbitalPeriod" optional="YES" attributeType="String"/>
+        <attribute name="population" optional="YES" attributeType="String"/>
+        <attribute name="residents" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String]"/>
+        <attribute name="rotationPeriod" optional="YES" attributeType="String"/>
+        <attribute name="surfaceWater" optional="YES" attributeType="String"/>
+        <attribute name="terrain" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="Films" positionX="-63" positionY="135" width="128" height="253"/>
+        <element name="Person" positionX="-63" positionY="90" width="128" height="283"/>
+        <element name="Planets" positionX="-63" positionY="-18" width="128" height="253"/>
+    </elements>
+</model>
