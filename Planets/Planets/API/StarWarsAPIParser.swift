@@ -14,7 +14,7 @@ class StarWarsAPIParser {
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
         do {
             let planetDetails = try jsonDecoder.decode(PlanetListResponse.self, from: data)
-            guard let planetListResponse = planetDetails.results else {
+            guard let planetListResponse = planetDetails.results, planetListResponse.isEmpty == false else {
                 return nil
             }
 

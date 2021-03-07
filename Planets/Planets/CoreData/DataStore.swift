@@ -10,27 +10,32 @@ import CoreData
 
 class DataStore {
 
-    static let shared = DataStore()
+    let dataStoreContainer = DataStoreContainer.shared
 
-    var persistentContainer: NSPersistentContainer!
-
-    private init() {
-        persistentContainer = NSPersistentContainer(name: "StarWars")
-        persistentContainer.loadPersistentStores { (storeDescription, error) in
-            if let coredataError = error {
-                NSLog("Core Data Error - \(coredataError)")
+    func deleteAllData() {
+        let planetInfoRequest = Planets.planetsFetchRequest()
+        let personInfoRequest = Person.personfetchRequest()
+        let filmInfoRequest = Films.filmFetchRequest()
+        
+        do {
+            let planetInfoList = try dataStoreContainer.viewContext().fetch(planetInfoRequest)
+            for planetDetails in planetInfoList {
+                dataStoreContainer.viewContext().delete(planetDetails)
             }
-        }
-    }
-
-    func saveContext() {
-        if persistentContainer.viewContext.hasChanges {
-            do {
-                try persistentContainer.viewContext.save()
-            } catch {
-                NSLog("Error while trying to save the context - \(error)")
+            
+            let personInfoList = try dataStoreContainer.viewContext().fetch(personInfoRequest)
+            for personDetails in personInfoList {
+                dataStoreContainer.viewContext().delete(personDetails)
             }
+
+            let filmInfoList = try dataStoreContainer.viewContext().fetch(filmInfoRequest)
+            for filmDetails in filmInfoList {
+                dataStoreContainer.viewContext().delete(filmDetails)
+            }
+        } catch {
+            NSLog("Unable to fetch the planet info from the local DB.")
         }
+
     }
 
     func save(planets: [PlanetInfo]?) {
@@ -41,7 +46,7 @@ class DataStore {
         }
 
         _ = planetsInfo.compactMap { planetInfo in
-            let planet = Planets(context: persistentContainer.viewContext)
+            let planet = Planets(context: dataStoreContainer.viewContext())
             planet.name = planetInfo.name
             planet.rotationPeriod = planetInfo.rotationPeriod
             planet.orbitalPeriod = planetInfo.orbitalPeriod
@@ -58,17 +63,17 @@ class DataStore {
             planet.url = planetInfo.url
         }
 
-        saveContext()
+        dataStoreContainer.saveContext()
     }
 
-    func fetchPlanetInfo(sortField: String, filter: NSPredicate?) -> [PlanetInfo]? {
+    func readPlanetInfo(sortField: String, filter: NSPredicate?) -> [PlanetInfo]? {
 
         let planetInfoRequest = Planets.planetsFetchRequest()
         do {
             let sort = NSSortDescriptor(key: sortField, ascending: true, selector: #selector(NSString.localizedStandardCompare(_:)))
             planetInfoRequest.sortDescriptors = [sort]
             planetInfoRequest.predicate = filter
-            let planetInfo = try persistentContainer.viewContext.fetch(planetInfoRequest)
+            let planetInfo = try dataStoreContainer.viewContext().fetch(planetInfoRequest)
             return planetInfo.compactMap {
                 PlanetInfo(name: $0.name,
                            rotationPeriod: $0.rotationPeriod,
@@ -99,7 +104,7 @@ class DataStore {
             return
         }
 
-        let person = Person(context: persistentContainer.viewContext)
+        let person = Person(context: dataStoreContainer.viewContext())
         person.name = personDetails.name
         person.height = personDetails.height
         person.mass = personDetails.mass
@@ -117,7 +122,7 @@ class DataStore {
         person.edited = personDetails.edited
         person.url = personDetails.url
 
-        saveContext()
+        dataStoreContainer.saveContext()
     }
 
     func readPersonInfo(with url: String) -> PeopleInfo? {
@@ -126,7 +131,7 @@ class DataStore {
         personInfoRequest.predicate = NSPredicate(format: "url == %@", url)
         
         do {
-            let personInfoResponse = try persistentContainer.viewContext.fetch(personInfoRequest)
+            let personInfoResponse = try dataStoreContainer.viewContext().fetch(personInfoRequest)
             guard personInfoResponse.isEmpty == false else {
                 return nil
             }
@@ -162,7 +167,7 @@ class DataStore {
             return
         }
 
-        let film = Films(context: persistentContainer.viewContext)
+        let film = Films(context: dataStoreContainer.viewContext())
         film.title = filmDetails.title
         film.episodeId = filmDetails.episodeId ?? 0
         film.openingCrawl = filmDetails.openingCrawl
@@ -178,7 +183,7 @@ class DataStore {
         film.edited = filmDetails.edited
         film.url = filmDetails.url
 
-        saveContext()
+        dataStoreContainer.saveContext()
     }
 
     func readFilmInfo(with url: String) -> FilmInfo? {
@@ -187,7 +192,7 @@ class DataStore {
         filmInfoRequest.predicate = NSPredicate(format: "url == %@", url)
 
         do {
-            let filmInfoResponse = try persistentContainer.viewContext.fetch(filmInfoRequest)
+            let filmInfoResponse = try dataStoreContainer.viewContext().fetch(filmInfoRequest)
             guard filmInfoResponse.isEmpty == false else {
                 return nil
             }

@@ -15,6 +15,7 @@ class PlanetsViewController: UIViewController {
     @IBOutlet weak var sortBarButton: UIBarButtonItem!
     @IBOutlet weak var filterBarButton: UIBarButtonItem!
     static let planetViewTableViewCellID = "planetInfoTableCellID"
+    private let refreshControl = UIRefreshControl()
 
     var planetInfo: [PlanetInfo]? {
         didSet {
@@ -41,20 +42,18 @@ class PlanetsViewController: UIViewController {
 
     func initializeApp() {
         planetInfo = viewModel.planetDatasource()
-        showHUD()
-        viewModel.fetchPlanetDetails()
+        fetchPlanetDetails()
     }
-
+    
     func initializeViewModel() {
 
-        viewModel.hideHUD = { [weak self] in
-            DispatchQueue.main.async {
-                self?.hideHUD()
-            }
+        viewModel.planetsDataFetchComplete = { [weak self] planetsInfo in
+            self?.fetchPeopleAndFilmDetails(for: planetsInfo)
         }
-
+        
         viewModel.updateUI = { [weak self] in
             DispatchQueue.main.async {
+                self?.refreshControl.endRefreshing()
                 self?.hideHUD()
                 self?.refreshUI()
             }
@@ -62,6 +61,7 @@ class PlanetsViewController: UIViewController {
 
         viewModel.displayError = { [weak self] (error: Error?) in
             DispatchQueue.main.async {
+                self?.refreshControl.endRefreshing()
                 self?.hideHUD()
                 if let error = error {
                     self?.displayErrorMessage(error: error)
@@ -145,6 +145,18 @@ class PlanetsViewController: UIViewController {
 
 // MARK: - Table View Setup Private Methods
 extension PlanetsViewController {
+    
+    private func fetchPlanetDetails(fullFetch: Bool = false) {
+        DispatchQueue.main.async {
+            self.showHUD()
+        }
+        viewModel.fetchPlanetDetails(fullFetch: fullFetch)
+    }
+    
+    private func fetchPeopleAndFilmDetails(for planetsInfo: [PlanetInfo]) {
+        viewModel.fetchPeopleAndFilms(for: planetsInfo)
+    }
+
     private func refreshTableView() {
         canDisplayBgView()
         planetInfoTableView.reloadData()
@@ -168,12 +180,22 @@ extension PlanetsViewController {
         planetInfoTableView.dataSource = self
         planetInfoTableView.delegate = self
         setupBgView()
+        setupRefreshView()
     }
 
     private func setupBgView() {
         bgLabel.font = .systemFont(ofSize: 14.0, weight: .light)
         bgLabel.text = "Sorry!!! No planets to show at this time!!!"
         planetInfoTableView.backgroundView = tableBgView
+    }
+    
+    private func setupRefreshView() {
+        refreshControl.addTarget(self, action: #selector(self.fullFetchPlanetDetails), for: .valueChanged)
+        planetInfoTableView.refreshControl = refreshControl
+    }
+    
+    @objc private func fullFetchPlanetDetails() {
+        fetchPlanetDetails(fullFetch: true)
     }
 }
 

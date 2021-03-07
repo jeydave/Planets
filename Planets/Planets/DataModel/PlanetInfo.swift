@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PlanetInfo {
+struct PlanetInfo: Equatable {
     var name: String?
     var rotationPeriod: String?
     var orbitalPeriod: String?
@@ -24,7 +24,7 @@ struct PlanetInfo {
     var url: String
 }
 
-struct PeopleInfo {
+struct PeopleInfo: Equatable {
     var name: String?
     var height: String?
     var mass: String?
@@ -43,7 +43,7 @@ struct PeopleInfo {
     var url: String
 }
 
-struct FilmInfo {
+struct FilmInfo: Equatable {
     var title: String?
     var episodeId: Int64?
     var openingCrawl: String?

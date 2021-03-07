@@ -138,7 +138,7 @@ struct PeopleResponse: Codable {
  */
 
 struct FilmResponse: Codable {
-    var title: String?
+    var title: String
     var episodeId: Int64?
     var openingCrawl: String?
     var director: String?

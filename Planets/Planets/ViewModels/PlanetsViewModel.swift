@@ -9,36 +9,43 @@ import Foundation
 
 class PlanetsViewModel {
 
-    var apiClient: StarWarsAPIClientProtocol = StarWarsAPIClient()
+    var apiClient: StarWarsAPIClientProtocol
+    var dataStore: DataStore
 
-    init() {
+    init(with apiClient: StarWarsAPIClientProtocol = StarWarsAPIClient(), and dataStore: DataStore = DataStore()) {
+        self.apiClient = apiClient
+        self.dataStore = dataStore
         initializeClosures()
     }
 
-    var hideHUD: (() -> Void)?
+    var planetsDataFetchComplete: (([PlanetInfo]) -> Void)?
     var updateUI: (() -> Void)?
     var displayError: ((Error?) -> Void)?
     let peopleFilmDispatchGroup = DispatchGroup()
 
     func initializeClosures() {
 
-        apiClient.planetsDataFetchSuccess = { [weak self] planetsInfo in
+        apiClient.planetsDataFetchSuccess = { [weak self] (planetsInfo, fullFetch) in
             guard let planetListInfo = planetsInfo, planetListInfo.isEmpty == false else {
-                self?.hideHUD?()
+                self?.displayError?(nil)
                 return
             }
 
-            DataStore.shared.save(planets: planetListInfo)
-            self?.fetchPeopleAndFilms(for: planetListInfo)
+            if let fullFetch = fullFetch, fullFetch == true {
+                self?.dataStore.deleteAllData()
+            }
+            
+            self?.dataStore.save(planets: planetListInfo)
+            self?.planetsDataFetchComplete?(planetListInfo)
         }
 
         apiClient.planetsDataFetchFailure = { [weak self] (error: Error?) in
             self?.displayError?(error)
         }
 
-        apiClient.personDataFetchSuccess = { personInfo in
+        apiClient.personDataFetchSuccess = { [weak self] personInfo in
             DispatchQueue.main.async {
-                DataStore.shared.save(personInfo: personInfo)
+                self?.dataStore.save(personInfo: personInfo)
             }
         }
 
@@ -48,9 +55,9 @@ class PlanetsViewModel {
             }
         }
 
-        apiClient.filmDataFetchSuccess = { filmInfo in
+        apiClient.filmDataFetchSuccess = { [weak self] filmInfo in
             DispatchQueue.main.async {
-                DataStore.shared.save(filmInfo: filmInfo)
+                self?.dataStore.save(filmInfo: filmInfo)
             }
         }
 
@@ -66,20 +73,20 @@ class PlanetsViewModel {
         }
 
         apiClient.filmDataFetchComplete = { [weak self] in
-            NSLog("Fetched all the people data")
+            NSLog("Fetched all the film data")
             self?.peopleFilmDispatchGroup.leave()
         }
     }
 
     func planetDatasource(with sortField: String = "created", filter: NSPredicate? = nil) -> [PlanetInfo]? {
-        return DataStore.shared.fetchPlanetInfo(sortField: sortField, filter: filter)
+        return dataStore.readPlanetInfo(sortField: sortField, filter: filter)
     }
 
-    func fetchPlanetDetails() {
-        apiClient.fetchPlanetList()
+    func fetchPlanetDetails(fullFetch: Bool) {
+        apiClient.fetchPlanetList(fullFetch: fullFetch)
     }
-
-    private func fetchPeopleAndFilms(for planetsInfo: [PlanetInfo]) {
+    
+    func fetchPeopleAndFilms(for planetsInfo: [PlanetInfo]) {
 
         peopleFilmDispatchGroup.enter()
         self.fetchPeopleList(planetsInfo)
@@ -93,23 +100,20 @@ class PlanetsViewModel {
         }
     }
 
+}
+
+//MARK: - Private Methods
+extension PlanetsViewModel {
+    
     private func fetchPeopleList(_ planetInfo: [PlanetInfo]) {
-        let peopleUrlList = Array(Set(peopleUrls(from: planetInfo)))
+        let peopleUrlList = Array(Set(PlanetsHelper.peopleUrls(from: planetInfo)))
         NSLog("People Urls: \(peopleUrlList)")
         apiClient.fetchPersonDetails(with: peopleUrlList)
     }
 
     private func fetchFilmList(_ planetInfo: [PlanetInfo]) {
-        let filmUrlList = Array(Set(filmUrls(from: planetInfo)))
+        let filmUrlList = Array(Set(PlanetsHelper.filmUrls(from: planetInfo)))
         NSLog("Film Urls: \(filmUrlList)")
         apiClient.fetchFilmDetails(with: filmUrlList)
-    }
-
-    private func peopleUrls(from planetsInfo: [PlanetInfo]) -> [String] {
-        return planetsInfo.compactMap { $0.residents }.reduce([], +)
-    }
-
-    private func filmUrls(from planetsInfo: [PlanetInfo]) -> [String] {
-        return planetsInfo.compactMap { $0.films }.reduce([], +)
     }
 }

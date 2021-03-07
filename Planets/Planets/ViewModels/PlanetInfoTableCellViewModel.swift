@@ -9,13 +9,17 @@ import Foundation
 
 class PlanetInfoTableCellViewModel {
 
+    var dataStore = DataStore()
+        
     func residentsText(with urls: [String]?) -> String {
 
         guard let residentUrlList = urls, residentUrlList.isEmpty == false else {
             return "Residents: None"
         }
 
-        return "Residents: " + residentUrlList.compactMap { DataStore.shared.readPersonInfo(with: $0)?.name }.joined(separator: ", ")
+        let residents = residentUrlList.compactMap { dataStore.readPersonInfo(with: $0)?.name }.joined(separator: ", ")
+        
+        return residents.isEmpty ? "Residents: None" : ("Residents: " + residents)
     }
 
     func filmsText(with urls: [String]?) -> String {
@@ -24,6 +28,7 @@ class PlanetInfoTableCellViewModel {
             return "Films: None"
         }
 
-        return "Films: " + filmsUrlList.compactMap { DataStore.shared.readFilmInfo(with: $0)?.title }.joined(separator: ", ")
+        let films = filmsUrlList.compactMap { dataStore.readFilmInfo(with: $0)?.title }.joined(separator: ", ")
+        return films.isEmpty ? "Films: None" : ("Films: " + films)
     }
 }
