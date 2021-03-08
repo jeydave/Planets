@@ -12,6 +12,9 @@ class DataStore {
 
     let dataStoreContainer = DataStoreContainer.shared
 
+    /**
+     Deletes all the local data in DB
+     */
     func deleteAllData() {
         let planetInfoRequest = Planets.planetsFetchRequest()
         let personInfoRequest = Person.personfetchRequest()
@@ -38,6 +41,10 @@ class DataStore {
 
     }
 
+    /**
+     Func to save the Planets info in the local DB
+     - Parameter planets: An array of PlanetInfo objects to be saved in the local DB
+     */
     func save(planets: [PlanetInfo]?) {
 
         guard let planetsInfo = planets else {
@@ -66,6 +73,13 @@ class DataStore {
         dataStoreContainer.saveContext()
     }
 
+    /**
+     Func that fetches the Planet Info from the local DB based on the available attributes
+     - Parameters:
+        - sortField: A String indicating the attribute based on which the result should be sorted
+        - filter: A predicate based on which the result should be filtered. Can be nil.
+     - Returns: An array of PlanetInfo read from the local DB matching the sort and filter conditions
+     */
     func readPlanetInfo(sortField: String, filter: NSPredicate?) -> [PlanetInfo]? {
 
         let planetInfoRequest = Planets.planetsFetchRequest()
@@ -97,6 +111,10 @@ class DataStore {
         return nil
     }
 
+    /**
+     Func to save the People info in the local DB
+     - Parameter personInfo: An array of PeopleInfo objects to be saved in the local DB
+     */
     func save(personInfo: PeopleInfo?) {
 
         guard let personDetails = personInfo else {
@@ -125,6 +143,11 @@ class DataStore {
         dataStoreContainer.saveContext()
     }
 
+    /**
+     Func that fetches the Person Info from the local DB based for the url
+     - Parameter url: Url of the Person Info to be read
+     - Returns: The PeopleInfo object of the Person
+     */
     func readPersonInfo(with url: String) -> PeopleInfo? {
 
         let personInfoRequest = Person.personfetchRequest()
@@ -160,6 +183,10 @@ class DataStore {
         return nil
     }
 
+    /**
+     Func to save the Film info in the local DB
+     - Parameter filmInfo: An array of FilmInfo objects to be saved in the local DB
+     */
     func save(filmInfo: FilmInfo?) {
 
         guard let filmDetails = filmInfo else {
@@ -186,6 +213,11 @@ class DataStore {
         dataStoreContainer.saveContext()
     }
 
+    /**
+     Func that fetches the Film Info from the local DB based for the url
+     - Parameter url: Url of the Film Info to be read
+     - Returns: The FilmInfo object of the Film
+     */
     func readFilmInfo(with url: String) -> FilmInfo? {
 
         let filmInfoRequest = Films.filmFetchRequest()

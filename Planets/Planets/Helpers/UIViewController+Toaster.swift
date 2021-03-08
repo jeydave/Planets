@@ -9,6 +9,10 @@ import UIKit
 
 extension UIViewController {
     
+    /**
+     A basic toaster implementation that displays the message
+     - Parameter message: The message that needs to be displayed in the toaster
+     */
     func displayToaster(with message: String) {
         let topBarHeight = (self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) + (self.navigationController?.navigationBar.frame.height ?? 0.0)
         let labelRect = CGRect(x: 0, y: topBarHeight - 50, width: self.view.frame.size.width, height: 50)

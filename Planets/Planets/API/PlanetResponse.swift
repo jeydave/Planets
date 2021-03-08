@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct to decode the Planet List Response from Server
 struct PlanetListResponse: Codable {
     var count: UInt
     var next: String?
@@ -14,6 +15,7 @@ struct PlanetListResponse: Codable {
     var results: [PlanetResponse]?
 }
 
+/// Struct to decode the Individual Planet Response from Server
 struct PlanetResponse: Codable {
     var name: String
     var rotationPeriod: String
@@ -86,6 +88,7 @@ struct PlanetResponse: Codable {
  edited string -- the ISO 8601 date format of the time that this resource was edited.
  */
 
+/// Struct to decode the Individual People Response from Server
 struct PeopleResponse: Codable {
     var name: String
     var height: String
@@ -137,6 +140,7 @@ struct PeopleResponse: Codable {
  }
  */
 
+/// Struct to decode the Individual Film Response from Server
 struct FilmResponse: Codable {
     var title: String
     var episodeId: Int64?

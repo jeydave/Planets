@@ -9,6 +9,11 @@ import Foundation
 
 class StarWarsAPIParser {
 
+    /**
+     Parse the Planet List Response data and output as PlanetInfo objects for use in the app.
+     - Parameter data: The decoded Planet List Response
+     - Returns: An array of PlanetInfo objects or nil if no data
+     */
     static func parsePlanetListResponse(with data: Data) -> [PlanetInfo]? {
         let jsonDecoder = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -43,6 +48,11 @@ class StarWarsAPIParser {
         return nil
     }
 
+    /**
+     Parse the Person Response data and output as PeopleInfo objects for use in the app.
+     - Parameter data: The decoded Person Response
+     - Returns: A PeopleInfo object or nil if no data
+     */
     static func parsePersonResponse(with data: Data) -> PeopleInfo? {
         let jsonDecoder = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -74,6 +84,11 @@ class StarWarsAPIParser {
         return nil
     }
 
+    /**
+     Parse the Film Response data and output as FilmInfo objects for use in the app.
+     - Parameter data: The decoded Film Response
+     - Returns: A FilmInfo object or nil if no data
+     */
     static func parseFilmResponse(with data: Data) -> FilmInfo? {
         let jsonDecoder = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase

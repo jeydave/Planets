@@ -20,6 +20,7 @@ enum LabelType: Int {
     case films
 }
 
+/// The customized tableview cell for displaying Planet details
 class PlanetInfoTableViewCell: UITableViewCell {
 
     @IBOutlet weak var planetName: UILabel!

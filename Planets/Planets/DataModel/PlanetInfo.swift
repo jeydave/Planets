@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Data model for storing the Planet information
 struct PlanetInfo: Equatable {
     var name: String?
     var rotationPeriod: String?
@@ -24,6 +25,7 @@ struct PlanetInfo: Equatable {
     var url: String
 }
 
+/// Data model for storing the Resident information
 struct PeopleInfo: Equatable {
     var name: String?
     var height: String?
@@ -43,6 +45,7 @@ struct PeopleInfo: Equatable {
     var url: String
 }
 
+/// Data model for storing the Film information
 struct FilmInfo: Equatable {
     var title: String?
     var episodeId: Int64?

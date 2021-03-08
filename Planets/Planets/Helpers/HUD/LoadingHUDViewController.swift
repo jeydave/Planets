@@ -7,6 +7,9 @@
 
 import UIKit
 
+/**
+ Displays a Loading HUD
+ */
 class LoadingHUDViewController: UIViewController {
 
     @IBOutlet weak var loadingView: UIView!

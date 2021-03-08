@@ -78,10 +78,22 @@ class PlanetsViewModel {
         }
     }
 
+    /**
+     The func that supplies data to the View Controller
+     - Parameters:
+        - sortField: A string containing the attribute name with which the data source can be sorted. Default value is `created`
+        - filter: NSPredicate with the condition to filter out the results. Can be nil.
+     - Returns: An array of `PlanetInfo` objects if present or nil
+    */
     func planetDatasource(with sortField: String = "created", filter: NSPredicate? = nil) -> [PlanetInfo]? {
         return dataStore.readPlanetInfo(sortField: sortField, filter: filter)
     }
 
+    /**
+     The func to fetch the planet details from the server
+     
+     - Parameter fullFetch: If true, Etag info will be ignored. If false and Etag is available, Etag will be added to the If-None-Match header to check if updates are available.
+    */
     func fetchPlanetDetails(fullFetch: Bool) {
         apiClient.fetchPlanetList(fullFetch: fullFetch)
     }

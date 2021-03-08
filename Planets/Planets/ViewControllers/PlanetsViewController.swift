@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// The UI for displaying Planet details
 class PlanetsViewController: UIViewController {
 
     @IBOutlet weak var planetInfoTableView: UITableView!
@@ -80,6 +81,7 @@ class PlanetsViewController: UIViewController {
         self.displayToaster(with: errorDescription)
     }
 
+    /// IBAction to handle the Sort Bar button click
     @IBAction func onSortBarButtonClicked(_ sender: Any) {
         let alertController = UIAlertController(title: "Sort", message: "Sorts the planet list in ascending order of the selected field.", preferredStyle: .actionSheet)
 
@@ -109,6 +111,7 @@ class PlanetsViewController: UIViewController {
         self.present(alertController, animated: true, completion: nil)
     }
 
+    /// IBAction to handle the Filter Bar button click
     @IBAction func onFilterBarButtonClicked(_ sender: Any) {
         let alertController = UIAlertController(title: "Filter", message: "Filters the planet list based on the terrain type.", preferredStyle: .actionSheet)
 

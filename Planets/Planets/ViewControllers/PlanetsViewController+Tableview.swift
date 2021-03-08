@@ -7,6 +7,7 @@
 
 import UIKit
 
+//MARK:- UITableViewDataSource Handling
 extension PlanetsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -31,6 +32,7 @@ extension PlanetsViewController: UITableViewDataSource {
     }
 }
 
+//MARK:- UITableViewDelegate Handling
 extension PlanetsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

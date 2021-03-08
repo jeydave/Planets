@@ -21,16 +21,65 @@ enum HTTPHeaderKey: String {
 protocol StarWarsAPIClientProtocol {
     var peopleListGroup: DispatchGroup { get }
     var filmListGroup: DispatchGroup { get }
+    
+    /**
+     The closure that will be called when Planets data fetch is successful
+     */
     var planetsDataFetchSuccess:(([PlanetInfo]?, Bool?) -> Void)? { get set }
+    
+    /**
+     The closure that will be called when Planets data fetch failed
+     */
     var planetsDataFetchFailure:((Error?) -> Void)? { get set }
+    
+    /**
+     The func that calls the Planets API and fetches the Planet list
+     - Parameter fullFetch: The bool state to indicate if the API should use Etag value or not in the fetch
+     */
     func fetchPlanetList(fullFetch: Bool)
+    
+    /**
+     The closure that will be called when Resident data fetch is successful
+     */
     var personDataFetchSuccess:((PeopleInfo?) -> Void)? { get set }
+    
+    /**
+     The closure that will be called when Resident data fetch failed
+     */
     var personDataFetchFailure:((Error?) -> Void)? { get set }
+    
+    /**
+     The func that is used to call the Resident API and fetch the Resident Info
+     - Parameters:
+        - urlList: Provide the list of Resident URLs to be fetched from server
+     */
     func fetchPersonDetails(with urlList: [String])
+    
+    /**
+     The closure that will be called when all the Residents data in the Url list have been fetched
+     */
     var peopleDataFetchComplete:(() -> Void)? { get set }
+    
+    /**
+     The closure that will be called when Film data fetch is successful
+     */
     var filmDataFetchSuccess:((FilmInfo?) -> Void)? { get set }
+    
+    /**
+     The closure that will be called when Film data fetch failed
+     */
     var filmDataFetchFailure:((Error?) -> Void)? { get set }
+    
+    /**
+     The func that is used to call the Film API and fetch the Film Info
+     - Parameters:
+        - urlList: Provide the list of Film URLs to be fetched from server
+     */
     func fetchFilmDetails(with urlList: [String])
+    
+    /**
+     The closure that will be called when all the Films data in the Url list have been fetched
+     */
     var filmDataFetchComplete:(() -> Void)? { get set }
 }
 

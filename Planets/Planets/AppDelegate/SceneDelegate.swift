@@ -18,7 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        // Do not display the UI if launched from Unit tests
+        // Do not display the UI if launched from Unit tests as we are
+        // not interested in Unit testing the UI.
         if CommandLine.arguments.contains("isUnitTestLaunch") {
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UIViewController()

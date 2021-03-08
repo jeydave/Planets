@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 
+/// A singleton class containing the Persistent Store that can be used in the app
 class DataStoreContainer {
     
     static let shared = DataStoreContainer()
