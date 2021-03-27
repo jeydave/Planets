@@ -20,7 +20,7 @@ class StarWarsAPIClientTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         let urlConfig = URLSessionConfiguration.default
         urlConfig.protocolClasses = [MockURLProtocol.self]
-        let urlSession = URLSession(configuration: urlConfig)
+        let urlSession = URLSession(configuration: urlConfig, delegate: self, delegateQueue: nil)
         apiClient = StarWarsAPIClient(urlSession: urlSession)
         UserDefaults.standard.removeObject(forKey: StarWarsAPIClient.kETagUserDefaultsKey)
     }
@@ -28,6 +28,12 @@ class StarWarsAPIClientTests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         UserDefaults.standard.removeObject(forKey: StarWarsAPIClient.kETagUserDefaultsKey)
+    }
+}
+
+extension StarWarsAPIClientTests: URLSessionDelegate {
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        completionHandler(.performDefaultHandling, nil)
     }
 }
 

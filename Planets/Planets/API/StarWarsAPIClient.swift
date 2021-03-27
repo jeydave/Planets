@@ -83,9 +83,9 @@ protocol StarWarsAPIClientProtocol {
     var filmDataFetchComplete:(() -> Void)? { get set }
 }
 
-class StarWarsAPIClient: StarWarsAPIClientProtocol {
+class StarWarsAPIClient: NSObject, StarWarsAPIClientProtocol {
     
-    let urlSession: URLSession
+    var urlSession: URLSession?
     var peopleListGroup = DispatchGroup()
     var filmListGroup = DispatchGroup()
     var planetsDataFetchSuccess: (([PlanetInfo]?, Bool?) -> Void)?
@@ -100,8 +100,14 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
     static let kETagUserDefaultsKey = "eTagUDKey"
     static let starWarsPlanetsAPI = "https://swapi.dev/api/planets/"
 
-    init(urlSession: URLSession = .shared) {
-        self.urlSession = urlSession
+    init(urlSession: URLSession? = nil) {
+        super.init()
+        
+        if let session = urlSession {
+            self.urlSession = session
+        } else {
+            self.urlSession = URLSession(configuration: .ephemeral, delegate: self, delegateQueue: nil)
+        }
     }
     
     func fetchPlanetList(fullFetch: Bool = false) {
@@ -125,7 +131,7 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
             urlRequest.addValue(eTagValue, forHTTPHeaderField: HTTPHeaderKey.ifNoneMatch.rawValue)
         }
 
-        let task = urlSession.dataTask(with: urlRequest) { (data, urlResponse, error) in
+        let task = urlSession?.dataTask(with: urlRequest) { (data, urlResponse, error) in
 
             if let response = urlResponse as? HTTPURLResponse {
                 if response.statusCode == HTTPStatusCodes.notModified.rawValue {
@@ -157,7 +163,7 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
             self.planetsDataFetchSuccess?(nil, false)
         }
 
-        task.resume()
+        task?.resume()
     }
 
     func fetchPersonDetails(with urlList: [String]) {
@@ -176,7 +182,7 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
             urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.addValue("Accept", forHTTPHeaderField: "Vary")
 
-            let task = urlSession.dataTask(with: urlRequest) { (data, urlResponse, error) in
+            let task = urlSession?.dataTask(with: urlRequest) { (data, urlResponse, error) in
 
                 if let error = error {
                     self.personDataFetchFailure?(error)
@@ -192,7 +198,7 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
                 self.peopleListGroup.leave()
             }
 
-            task.resume()
+            task?.resume()
         }
 
         peopleListGroup.notify(queue: .main) {
@@ -217,7 +223,7 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
             urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.addValue("Accept", forHTTPHeaderField: "Vary")
 
-            let task = urlSession.dataTask(with: urlRequest) { (data, urlResponse, error) in
+            let task = urlSession?.dataTask(with: urlRequest) { (data, urlResponse, error) in
 
                 if let error = error {
                     self.filmDataFetchFailure?(error)
@@ -233,11 +239,42 @@ class StarWarsAPIClient: StarWarsAPIClientProtocol {
                 self.filmListGroup.leave()
             }
 
-            task.resume()
+            task?.resume()
         }
 
         peopleListGroup.notify(queue: .main) {
             self.filmDataFetchComplete?()
         }
+    }
+}
+
+extension StarWarsAPIClient: URLSessionDelegate {
+
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        NSLog(#function)
+        
+        guard let serverTrust = challenge.protectionSpace.serverTrust,
+              let certificate = SecTrustGetCertificateAtIndex(serverTrust, 0) else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        
+        let isServerTrusted = SecTrustEvaluateWithError(serverTrust, nil)
+        let remoteCertificate = SecCertificateCopyData(certificate) as NSData
+        
+        guard let localCertPath = Bundle.main.path(forResource: "swapi.dev", ofType: ".der"),
+              let localCertificate = NSData(contentsOfFile: localCertPath) as Data? else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+
+        if isServerTrusted && remoteCertificate.isEqual(to: localCertificate) {
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+            NSLog("Cert pinning complete for Session")
+            return
+        }
+        
+        completionHandler(.cancelAuthenticationChallenge, nil)
     }
 }
