@@ -17,6 +17,8 @@ The following actions are added:
 The app uses CoreData for storing the fetched items locally for offline viewing and API calls are made using the default URLSession calls. 
 Unit tests have been added for the non-UI code.
 
+##### Note: This was developed using Xcode 12.4
+
 ## Future Enhancements
 - Pagination of the various planets and their details (based on the next value in the API)
 - Relationships between Planets, Residents, Films, Starships, Vehicles, Species
